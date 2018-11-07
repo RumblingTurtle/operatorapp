@@ -8,6 +8,11 @@ from PyQt5 import QtWebEngineWidgets
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 import csv
 import os
+import sys
+import json
+
+sys.path.insert(0, '../softwarearchserver')
+from client import ServerClient
 
 #Returns absolute path relative to cwd
 def getAbsPath(path):
@@ -15,7 +20,9 @@ def getAbsPath(path):
 
 #Checks username and password in the database(Server communication routine neede)
 def checkUser(username, password):
-        return True
+        client = ServerClient("127.0.0.1",9090,False)
+        response = client.oneShotMessage("checkuser:"+username+"|"+password, "utf-8", 1024)
+        return True if response == "OK" else False
 
 #Creates new messagebox with given title and description
 def show_message(title, desc):
@@ -54,6 +61,13 @@ class LoginPage(QtWidgets.QMainWindow):
 
 #Operator map view
 class MapView(QtWidgets.QMainWindow):
+    def reloadDrivers(self):
+        client = ServerClient("127.0.0.1",9090,False)
+        response = client.oneShotMessage("getDrivers", "utf-8", 1024)
+        drivers = json.loads(response)
+        print(drivers[0]["lat"],drivers[0]["long"])
+        self.driverMap.page().runJavaScript("addDrivers("+response+");")
+
     def printPoints(self, points):
         print(points)
 
@@ -66,13 +80,13 @@ class MapView(QtWidgets.QMainWindow):
 
     #Function to reaload page
     def reloadPage(self):
-        self.map.setUrl(QtCore.QUrl(getAbsPath("map.html")))
+        self.driverMap.setUrl(QtCore.QUrl(getAbsPath("driverMap.html")))
 
     def __init__(self, UI_Path):
         super(MapView, self).__init__()
         uic.loadUi('map.ui', self)
-        self.map.setUrl(QtCore.QUrl(getAbsPath("map.html")))
-        self.pointsButton.clicked.connect(self.getPoints)
+        self.driverMap.setUrl(QtCore.QUrl(getAbsPath("driverMap.html")))
+        self.driverRefreshButton.clicked.connect(self.reloadDrivers)
         #Ctrl+R shortcut for refreshing the page
         self.shortcut = QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+R"), self)
         self.shortcut.activated.connect(self.reloadPage)

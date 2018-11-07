@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Delivery App</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <script src="test_files/turf.js"></script>
+    <script src="test_files/jquery.js"></script>
+    <script src="test_files/mapbox-gl.js"></script>
+    <link href="test_files/mapbox-gl.css" rel="stylesheet">
+    <style>
+      body {
+        margin:0;
+        padding:0;
+      }
+
+      #map { 
+        position:absolute; 
+        top:0; 
+        bottom:0; 
+        right:0px; 
+        left:0px;  
+        background:black;
+      }
+
+      #marker {
+        background-image: url('https://candies.files.wordpress.com/2008/02/carrie.jpg');
+        background-size: cover;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+        } 
+
+    </style>
+  </head>
+
+<body>
+    <div id="map" class="contain mapboxgl-map">
+        <div class="mapboxgl-canary" style="visibility: hidden;"></div>
+        <div class="mapboxgl-canvas-container mapboxgl-interactive mapboxgl-touch-drag-pan mapboxgl-touch-zoom-rotate">
+        <canvas class="mapboxgl-canvas" style="position: absolute; width: 1920px; height: 966px;" tabindex="0" aria-label="Map" width="1920" height="966"></canvas>
+            <div class="truck mapboxgl-marker mapboxgl-marker-anchor-center" style="transform: translate(-50%, -50%) translate(960px, 483px);"></div></div>
+        <div class="mapboxgl-control-container"><div class="mapboxgl-ctrl-top-left"></div><div class="mapboxgl-ctrl-top-right"></div><div class="mapboxgl-ctrl-bottom-left">
+        </div>
+    </div></div>
+
+    
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoicnVtYmxpbmd0dXJ0bGUiLCJhIjoiY2ptd2ZlOWZiMGpsdzN3cXY2ODg5aWlpbSJ9.Cc769sS986PpopQjwnBQuQ';
+
+        var map = new mapboxgl.Map({
+          container: 'map', // container id
+          style: 'mapbox://styles/mapbox/light-v9'
+        });
+
+        map.on('load', function() {})
+
+        function fitToMarkers(coordinates)
+        {
+            var bounds = coordinates.reduce(function(bounds, coord) {
+                return bounds.extend(coord);
+            }, new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]));
+
+            map.fitBounds(bounds, {
+                padding: 40
+            });
+        }
+
+        function addDrivers(drivers)
+        {
+            coordinates = []
+            drivers.forEach(function(driver){ 
+                var pos = [parseFloat(driver["long"]),parseFloat(driver["lat"]),];
+                coordinates.push(pos);
+                var popup = new mapboxgl.Popup({ offset: 25 }).setText(driver["name"]+" "+driver["surname"]+"\n"+driver["phone"]);
+
+                // create DOM element for the marker
+                var el = document.createElement('div');
+                el.id = 'marker';
+
+                // create the marker
+                new mapboxgl.Marker(el)
+                    .setLngLat(pos)
+                    .setPopup(popup)
+                    .addTo(map);
+            });
+            fitToMarkers(coordinates);
+        }
+
+    </script>
+  
+</body>
+</html>
