@@ -6,8 +6,8 @@
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
     <script src="test_files/turf.js"></script>
     <script src="test_files/jquery.js"></script>
-    <script src="test_files/mapbox-gl.js"></script>
-    <link href="test_files/mapbox-gl.css" rel="stylesheet">
+    <script src='test_files/mapbox-gl.js'></script>
+    <link href="test_files/mapbox-gl.css" rel='stylesheet' />
     <style>
       body {
         margin:0;
@@ -31,7 +31,6 @@
         border-radius: 50%;
         cursor: pointer;
         } 
-
     </style>
   </head>
 
@@ -43,6 +42,7 @@
             <div class="truck mapboxgl-marker mapboxgl-marker-anchor-center" style="transform: translate(-50%, -50%) translate(960px, 483px);"></div></div>
         <div class="mapboxgl-control-container"><div class="mapboxgl-ctrl-top-left"></div><div class="mapboxgl-ctrl-top-right"></div><div class="mapboxgl-ctrl-bottom-left">
         </div>
+        <div id='button'></div>
     </div></div>
 
     
@@ -54,7 +54,7 @@
           style: 'mapbox://styles/mapbox/light-v9'
         });
 
-        map.on('load', function() {})
+        map.on('load', function() {});
 
         function fitToMarkers(coordinates)
         {
@@ -85,7 +85,6 @@
                     .setPopup(popup)
                     .addTo(map);
             });
-            fitToMarkers(coordinates);
         }
 
     </script>
