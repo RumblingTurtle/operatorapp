@@ -7,26 +7,15 @@ import json
 
 # Operator map view
 class DriverMapView(QtWidgets.QMainWindow):
-	def reloadDrivers(self):
-		client = ServerClient("127.0.0.1", 9090, False)
-		try:
-			response = client.oneShotMessage("getDrivers", "utf-8", 1024)
-		except Exception:
-			show_message("Connection error","Can't reach server")
+	def reloadDrivers(self):		
+		drivers, response = sendRequest("getDrivers")
+		#Result is unparsable
+		if drivers ==None:
 			return
-
-		if response == None:
-			return
-		drivers = json.loads(response)
-		
-		self.driverMap.page().runJavaScript("addDrivers(" + response + ");")
+		self.driverMap.page().runJavaScript("addDrivers(" + response + "); fitToMarkers();")
 		driverElements = []
 		for driver in drivers:
 			driverElements.append(str(driver["id"])+":"+driver["name"]+" "+ driver["surname"])
-
-		self.driverList.clear()
-		for dinfo in driverElements:
-			self.driverList.addItem(QtGui.QIcon(), dinfo)
 
 	# Function to reaload page
 	def reloadPage(self):
@@ -37,7 +26,7 @@ class DriverMapView(QtWidgets.QMainWindow):
 		uic.loadUi(UI_Path, self)
 		self.driverMap.setUrl(QtCore.QUrl(getAbsPath("driverMap.html")))
 		self.driverRefreshButton.clicked.connect(self.reloadDrivers)
-
+		
 		# Ctrl+R shortcut for refreshing the page
 		self.shortcut = QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+R"), self)
 		self.shortcut.activated.connect(self.reloadPage)

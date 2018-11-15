@@ -6,15 +6,15 @@
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
     <script src="test_files/turf.js"></script>
     <script src="test_files/jquery.js"></script>
-    <script src="test_files/mapbox-gl.js"></script>
-    <link href="test_files/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.css" rel="stylesheet">
     <style>
       body {
         margin:0;
         padding:0;
       }
 
-      #map { 
+      #map1 { 
         position:absolute; 
         top:0; 
         bottom:0; 
@@ -22,15 +22,6 @@
         left:0px;  
         background:black;
       }
-      
-      #driver {
-        background-image: url('http://www.kino.ru/photos/resizes/271/47.jpg');
-        background-size: cover;
-        width: 25px;
-        height: 25px;
-        border-radius: 50%;
-        cursor: pointer;
-        }
 
       #warehouse {
         background-image: url('https://png.pngtree.com/svg/20170426/warehouse_467076.png');
@@ -44,17 +35,15 @@
     </style>
   </head>
   <body>
-    <div id="map" class="contain mapboxgl-map"><div class="mapboxgl-canary" style="visibility: hidden;"></div><div class="mapboxgl-canvas-container mapboxgl-interactive mapboxgl-touch-drag-pan mapboxgl-touch-zoom-rotate"><canvas class="mapboxgl-canvas" style="position: absolute; width: 1920px; height: 966px;" tabindex="0" aria-label="Map" width="1920" height="966"></canvas><div class="truck mapboxgl-marker mapboxgl-marker-anchor-center" style="transform: translate(-50%, -50%) translate(960px, 483px);"></div></div><div class="mapboxgl-control-container"><div class="mapboxgl-ctrl-top-left"></div><div class="mapboxgl-ctrl-top-right"></div><div class="mapboxgl-ctrl-bottom-left"><div class="mapboxgl-ctrl" style="display: block;"><a class="mapboxgl-ctrl-logo" target="_blank" href="https://www.mapbox.com/" aria-label="Mapbox logo" rel="noopener"></a></div></div><div class="mapboxgl-ctrl-bottom-right"><div class="mapboxgl-ctrl mapboxgl-ctrl-attrib"><a href="https://www.mapbox.com/about/maps/" target="_blank">© Mapbox</a> <a href="http://www.openstreetmap.org/about/" target="_blank">© OpenStreetMap</a> <a class="mapbox-improve-map" href="https://www.mapbox.com/feedback/?owner=mapbox&amp;id=light-v9&amp;access_token=pk.eyJ1IjoicnVtYmxpbmd0dXJ0bGUiLCJhIjoiY2ptd2ZlOWZiMGpsdzN3cXY2ODg5aWlpbSJ9.Cc769sS986PpopQjwnBQuQ" target="_blank">Improve this map</a></div></div></div></div>
+    <div id="map1" class="contain mapboxgl-map"><div class="mapboxgl-canary" style="visibility: hidden;"></div><div class="mapboxgl-canvas-container mapboxgl-interactive mapboxgl-touch-drag-pan mapboxgl-touch-zoom-rotate"><canvas class="mapboxgl-canvas" style="position: absolute; width: 1920px; height: 966px;" tabindex="0" aria-label="Map" width="1920" height="966"></canvas><div class="truck mapboxgl-marker mapboxgl-marker-anchor-center" style="transform: translate(-50%, -50%) translate(960px, 483px);"></div></div><div class="mapboxgl-control-container"><div class="mapboxgl-ctrl-top-left"></div><div class="mapboxgl-ctrl-top-right"></div><div class="mapboxgl-ctrl-bottom-left"><div class="mapboxgl-ctrl" style="display: block;"><a class="mapboxgl-ctrl-logo" target="_blank" href="https://www.mapbox.com/" aria-label="Mapbox logo" rel="noopener"></a></div></div><div class="mapboxgl-ctrl-bottom-right"><div class="mapboxgl-ctrl mapboxgl-ctrl-attrib"><a href="https://www.mapbox.com/about/maps/" target="_blank">© Mapbox</a> <a href="http://www.openstreetmap.org/about/" target="_blank">© OpenStreetMap</a> <a class="mapbox-improve-map" href="https://www.mapbox.com/feedback/?owner=mapbox&amp;id=light-v9&amp;access_token=pk.eyJ1IjoicnVtYmxpbmd0dXJ0bGUiLCJhIjoiY2ptd2ZlOWZiMGpsdzN3cXY2ODg5aWlpbSJ9.Cc769sS986PpopQjwnBQuQ" target="_blank">Improve this map</a></div></div></div></div>
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoicnVtYmxpbmd0dXJ0bGUiLCJhIjoiY2ptd2ZlOWZiMGpsdzN3cXY2ODg5aWlpbSJ9.Cc769sS986PpopQjwnBQuQ';
 
         // Initialize a map
         var map = new mapboxgl.Map({
-          container: 'map',
+          container: 'map1',
           style: 'mapbox://styles/mapbox/light-v9'
         });
-
-        map.addControl(new mapboxgl.NavigationControl());
 
         // Create an empty GeoJSON feature collection, which will be used as the data source for the route before users add any new data
         var nothing = turf.featureCollection([]);
@@ -123,17 +112,15 @@
             }
           }, 'waterway-label');
 
-          /*
           // Listen for a click on the map
           map.on('click', function(e) {
             // When the map is clicked, add a new drop off point
             // and update the `dropoffs-symbol` layer
             newDropoff(map.unproject(e.point));
             updateDropoffs(dropoffs);
-          });*/
+          });
         });
 
-        /*
         function newDropoff(coords) {
         // Store the clicked point as a new GeoJSON feature with
         // two properties: `orderTime` and `key`
@@ -145,7 +132,7 @@
           }
         );
 
-        if(Object.keys(pointHopper).length==2)
+        if(Object.keys(pointHopper).length==10)
         {
           pointHopper = {};
           dropoffs = turf.featureCollection([]);
@@ -153,13 +140,7 @@
 
         dropoffs.features.push(pt);
         pointHopper[pt.properties.key] = [coords.lng, coords.lat];
-
-        if(Object.keys(pointHopper).length!=2)
-        {
-          map.getSource('route')
-              .setData(nothing)
-          return;
-        }
+        
 
         // Make a request to the Optimization API
         $.ajax({
@@ -189,77 +170,8 @@
       function updateDropoffs(geojson) {
         map.getSource('dropoffs-symbol')
           .setData(geojson);
-      }*/
-
-      function renderPath(coords)
-      {
-        pointHopper = {};
-        dropoffs = turf.featureCollection([]);
-
-        coords.forEach(function(c){
-          var pt = turf.point(
-          [parseFloat(c[1]),parseFloat(c[0])],
-          {
-            orderTime: Date.now(),
-            key: Math.random()
-          }
-          );
-
-          dropoffs.features.push(pt);
-          pointHopper[pt.properties.key]= [parseFloat(c[1]),parseFloat(c[0])];
-        });
-
-        $.ajax({
-          method: 'GET',
-          url: assembleQueryURL(),
-        }).done(function(data) {
-          
-          // If there is no route provided, reset
-          if (data.trips!=null && !data.trips[0]) {
-            var routeGeoJSON = nothing;
-          } else {
-            //If routes exist
-            if(data.trips==null)
-              return;
-            else
-              // Create a GeoJSON feature collection
-            var routeGeoJSON = turf.featureCollection([turf.feature(data.trips[0].geometry)]);
-
-            // Update the `route` source by getting the route source 
-            // and setting the data equal to routeGeoJSON
-            map.getSource('route')
-              .setData(routeGeoJSON);
-          }
-
-          updateDropoffs(dropoffs);
-        }
-      );
-    }
-      function removeRoutes()
-      {
-        pointHopper = {};
-        dropoffs = turf.featureCollection([]);
-        map.flyTo({zoom: 5});
-        map.getSource('route')
-              .setData(dropoffs);
-        updateDropoffs(dropoffs);
       }
 
-      function updateDropoffs(geojson) {
-        map.getSource('dropoffs-symbol')
-          .setData(geojson);
-      }
-
-      function fitAll()
-      {
-          var bounds = objectToArray(pointHopper).reduce(function(bounds, coord) {
-              return bounds.extend(coord);
-          }, new mapboxgl.LngLatBounds(objectToArray(pointHopper)[0], objectToArray(pointHopper)[0]));
-
-          map.fitBounds(bounds, {
-              padding: 40
-          });
-      }
 
       // Here you'll specify all the parameters necessary for requesting a response from the Optimization API
       function assembleQueryURL() {
@@ -318,48 +230,6 @@
           wmarkers.forEach(function(m){m.remove();});
       }
 
-      //------------Driver rendering----------------
-      function fitToDrivers()
-      {
-          var bounds = dcoordinates.reduce(function(bounds, coord) {
-              return bounds.extend(coord);
-          }, new mapboxgl.LngLatBounds(dcoordinates[0], dcoordinates[0]));
-
-          map.fitBounds(bounds, {
-              padding: 40
-          });
-      }
-
-      var dcoordinates = [];
-      var dmarkers = [];
-      function renderDrivers(drivers)
-      {
-          removeDrivers();
-          dcoordinates = [];
-          dmarkers = [];
-          drivers.forEach(function(driver){ 
-              var pos = [parseFloat(driver["long"]),parseFloat(driver["lat"]),];
-              dcoordinates.push(pos);
-              var popup = new mapboxgl.Popup({ offset: 25 }).setText(driver["name"]+" "+driver["surname"]);
-
-              // create DOM element for the marker
-              var el = document.createElement('div');
-              el.id = 'driver';
-
-              // create the marker
-              var marker = new mapboxgl.Marker(el)
-                  .setLngLat(pos)
-                  .setPopup(popup)
-                  .addTo(map);
-
-              dmarkers.push(marker);
-          });
-      }
-
-      function removeDrivers()
-      {
-          dmarkers.forEach(function(m){m.remove();});
-      }
     </script>
   
 </body></html>

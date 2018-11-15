@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 from PyQt5 import QtWidgets,QtCore
 
 #Server client import
@@ -25,7 +26,6 @@ def moveFromCenter(window, left):
 	fg = window.frameGeometry()
 	widget = window.geometry()
 
-	print(center)
 	if left:
 		x = center.x()-int(widget.width()*0.55)
 	else:
@@ -34,3 +34,21 @@ def moveFromCenter(window, left):
 	y = center.y()
 	fg.moveCenter(QtCore.QPoint(x, y))
 	window.move(fg.topLeft())
+
+def sendRequest(request):
+	client = ServerClient("127.0.0.1", 9090, False)
+	try:
+		response = client.oneShotMessage(request, "utf-8", 32000)
+	except Exception:
+		show_message("Connection error","Can't reach server")
+		return
+	print(response)
+	if response == None:
+		return None, None
+	else:
+		try:
+			json.loads(response)
+			print("Received corrupt json from server")
+		except Exception:
+			return None,None
+		return json.loads(response), response

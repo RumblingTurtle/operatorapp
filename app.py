@@ -8,7 +8,6 @@ from ordermap import OrderMapView
 
 # Checks username and password in the database
 def checkUser(username, password):
-	return True
 	try:
 		client = ServerClient("127.0.0.1", 9090, False)
 	except Exception:
@@ -16,14 +15,13 @@ def checkUser(username, password):
 		return 
 
 	response = client.oneShotMessage(
-	"checkuser:" + username + "|" + password, "utf-8", 1024)
-
+	"checkuser:" + username + "|" + password, "utf-8", 128)
+	print(response)
 	if response == "OK":
 		return "OK"
 	else:
 		# If login failed
 		show_message("Invalid credentials","Please provide correct username and password")
-
 
 # Login page Interface
 
@@ -33,6 +31,8 @@ class LoginPage(QtWidgets.QMainWindow):
 		super(LoginPage, self).__init__()
 		uic.loadUi(UI_Path, self)
 		self.loginButton.clicked.connect(self.login)
+		self.shortcut = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Return), self)
+		self.shortcut.activated.connect(self.login)
 		self.show()
 
 	# Checks validity of the entered username and password

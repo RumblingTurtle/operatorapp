@@ -24,7 +24,7 @@
       }
 
       #marker {
-        background-image: url('https://candies.files.wordpress.com/2008/02/carrie.jpg');
+        background-image: url('http://www.kino.ru/photos/resizes/271/47.jpg');
         background-size: cover;
         width: 50px;
         height: 50px;
@@ -56,7 +56,7 @@
 
         map.on('load', function() {});
 
-        function fitToMarkers(coordinates)
+        function fitToMarkers()
         {
             var bounds = coordinates.reduce(function(bounds, coord) {
                 return bounds.extend(coord);
@@ -67,24 +67,34 @@
             });
         }
 
+        var coordinates = [];
+        var markers = [];
         function addDrivers(drivers)
         {
-            coordinates = []
+            clearMap();
+            coordinates = [];
+            markers = [];
             drivers.forEach(function(driver){ 
                 var pos = [parseFloat(driver["long"]),parseFloat(driver["lat"]),];
                 coordinates.push(pos);
-                var popup = new mapboxgl.Popup({ offset: 25 }).setText(driver["name"]+" "+driver["surname"]+"\n"+driver["phone"]);
+                var popup = new mapboxgl.Popup({ offset: 25 }).setText(driver["id"]+":"+driver["name"]+" "+driver["surname"]);
 
                 // create DOM element for the marker
                 var el = document.createElement('div');
                 el.id = 'marker';
 
                 // create the marker
-                new mapboxgl.Marker(el)
+                var marker = new mapboxgl.Marker(el)
                     .setLngLat(pos)
                     .setPopup(popup)
                     .addTo(map);
+                markers.push(marker);
             });
+        }
+
+        function clearMap()
+        {
+            markers.forEach(function(m){m.remove();});
         }
 
     </script>
