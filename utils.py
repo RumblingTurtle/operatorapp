@@ -42,13 +42,7 @@ def sendRequest(request):
 	except Exception:
 		show_message("Connection error","Can't reach server")
 		return
-	print(response)
 	if response == None:
 		return None, None
 	else:
-		try:
-			json.loads(response)
-			print("Received corrupt json from server")
-		except Exception:
-			return None,None
-		return json.loads(response), response
+		return json.loads(response.replace("'","\"")), response
